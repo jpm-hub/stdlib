@@ -135,6 +135,9 @@ public class jpm {
         } else if (o instanceof Class<?>) {
             Class<?> clazz = (Class<?>) o;
             System.out.println("Class: " + clazz.getName());
+        } else if (o instanceof Enum<?>) {
+            Enum<?> enumValue = (Enum<?>) o;
+            System.out.println("Enum: " + enumValue.getClass().getName() + "." + enumValue.name());
         } else {
             Class<?> clazz = o.getClass();
             System.out.println(clazz.getName() + " {");
