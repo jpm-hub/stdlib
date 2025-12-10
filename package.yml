@@ -1,6 +1,6 @@
 main: jpm.Main
 package: jpm
-version: 1.0.0
+version: 1.0.1
 language: java
 repos:
   - default: https://repo1.maven.org/maven2/
