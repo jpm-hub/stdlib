@@ -1,6 +1,7 @@
 package jpm;
 
 import java.util.Optional;
+import java.util.Stack;
 
 public class jpm {
     
@@ -36,7 +37,7 @@ public class jpm {
     }
 
     static int indent = 0;
-
+    static Stack<String> classes = new Stack<String>();
     public static void printDebug(Object o) {
         if (indent > 100) {
             throw new RuntimeException("Object nesting too deep");
@@ -141,6 +142,14 @@ public class jpm {
         } else {
             Class<?> clazz = o.getClass();
             System.out.println(clazz.getName() + " {");
+            if (classes.contains(clazz.getName())) {
+                System.out.print("  ".repeat(indent + 1));
+                System.out.println(clazz.getName() + " (circular reference) ...");
+                System.out.print("  ".repeat(indent));
+                System.out.println("}");
+                return;
+            }
+            classes.push(clazz.getName());
             java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
             indent++;
             for (java.lang.reflect.Field field : fields) {
@@ -156,6 +165,7 @@ public class jpm {
                 }
             }
             indent--;
+            classes.pop();
             System.out.print("  ".repeat(indent));
             System.out.println("}");
         }
