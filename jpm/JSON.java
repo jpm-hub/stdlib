@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class JSON {
     
-    static String list(Object... values) {
+    public static String list(Object... values) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < values.length; i++) {
@@ -19,22 +19,15 @@ public class JSON {
         if (values.length > 0)
             sb.setLength(sb.length() - 1); // remove last comma
         sb.append("]");
-        var s = sb.toString();
-        return s;
+        return sb.toString();
     }
-    static String KV(String key, Object value, Object... KV) {
+    public static String KV(Object... KV) {
         if (KV.length % 2 != 0)
             throw new IllegalArgumentException("JSON.KV needs even number of arguments (key-value pairs)");
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("\"").append(key).append("\":");
-        if (value instanceof String) {
-            sb.append("\"").append(value).append("\"");
-        } else {
-            sb.append(value);
-        }
         for (int i = 0; i < KV.length; i += 2) {
-            sb.append(",");
+            
             sb.append("\"").append(KV[i]).append("\":");
             if (KV[i + 1] instanceof String &&
                     !(KV[i + 1].toString().startsWith("{\"") && KV[i + 1].toString().endsWith("}")) &&
@@ -43,12 +36,14 @@ public class JSON {
             } else {
                 sb.append(KV[i + 1]);
             }
+            sb.append(",");
         }
+        if (KV.length > 0)
+            sb.setLength(sb.length() - 1); // remove last comma
         sb.append("}");
-        var s = sb.toString();
-        return s;
+        return sb.toString();
     }
-    public static void prettyPrint(String s) {
+    public static void print(String s) {
         boolean isKey = true;
         boolean inquotes = false;
         Stack<Boolean> inArray = new java.util.Stack<>();
@@ -164,7 +159,6 @@ public class JSON {
         System.out.print("\u001B[0m"); // reset
         System.out.println();
     }
-
     private static void pindent(int indent) {
         for (int i = 0; i < indent; i++)
             System.out.print(" ");

@@ -1,9 +1,7 @@
 main: jpm.Main
 package: jpm
-version: 1.0.3
+version: 1.0.4
 language: java
-repos:
-  - default: https://repo1.maven.org/maven2/
 scripts:
   clean: rm -rf out dist jpm_dependencies
 args:
