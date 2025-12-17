@@ -5,12 +5,12 @@ import java.util.Stack;
 
 public class jpm {
     
-    public static Optional<ClassExecuter> require(String fullClassName) {
+    public static ClassExecuter require(String fullClassName) {
         try {
-            return Optional.of(new ClassExecuter(fullClassName));
+            return new ClassExecuter(fullClassName);
         } catch (Exception e) {
             System.err.println("Class " + fullClassName + " not found: " + e);
-            return Optional.empty();
+            return null;
         }
     }
 
@@ -23,6 +23,10 @@ public class jpm {
             System.exit(1);
             return null;
         }
+    }
+
+    public static Thread run(Runnable r){
+        return Thread.ofVirtual().start(r);
     }
 
     public static void println(Object... o) {
