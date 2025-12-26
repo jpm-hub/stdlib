@@ -4,19 +4,26 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ClassExecuter {
 	private final String className;
-	private final Class<?> clazz;
+	private Class<?> clazz;
 	private Object instance;
 
-	public ClassExecuter(String className) {
+	public ClassExecuter(String className, boolean fatal) {
 		this.className = className;
 		try {
 			clazz = Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Class " + className + " not found: " + e);
+			System.err.println("Class " + className + " not found: " + e);
+			clazz = null;
+			if (fatal) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	public ClassExecuter construct(Object... typesAndArgs) {
+		if(clazz == null) {
+			return this;
+		}
 		if (typesAndArgs.length % 2 != 0) {
 			throw new IllegalArgumentException("typesAndArgs must be in pairs of (Class, Object)");
 		}
@@ -36,9 +43,14 @@ public class ClassExecuter {
 		}
 	}
 
-	public ClassExecuter construct(Object instance) { this.instance = instance; return this;}
+	public ClassExecuter construct(Object instance) { if(clazz == null) {
+			return this;
+		}this.instance = instance; return this;}
 
 	public Object call(String methodName, Object... typesAndArgs) {
+		if(clazz == null) {
+			return null;
+		}
 		if (typesAndArgs.length % 2 != 0) {
 			throw new IllegalArgumentException("typesAndArgs must be in pairs of (Class, Object)");
 		}
@@ -63,6 +75,9 @@ public class ClassExecuter {
 	}
 
 	public ClassExecuter factory(String methodName, Object... typesAndArgs) {
+		if(clazz == null) {
+			return this;
+		}
 		if (typesAndArgs.length % 2 != 0) {
 			throw new IllegalArgumentException("typesAndArgs must be in pairs of (Class, Object)");
 		}
@@ -82,6 +97,9 @@ public class ClassExecuter {
 	}
 
 	public ClassExecuter build(String methodName, Object... typesAndArgs) {
+		if(clazz == null) {
+			return this;
+		}
 		call(methodName, typesAndArgs);
 		return this;
 	}

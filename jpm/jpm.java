@@ -4,17 +4,12 @@ import java.util.Stack;
 public class jpm {
     
     public static ClassExecuter require(String fullClassName) {
-        try {
-            return new ClassExecuter(fullClassName);
-        } catch (Exception e) {
-            System.err.println("Class " + fullClassName + " not found: " + e);
-            return null;
-        }
+        return new ClassExecuter(fullClassName, false);
     }
 
     public static ClassExecuter requireFatal(String fullClassName, String errorMessage) {
         try {
-            return new ClassExecuter(fullClassName);
+            return new ClassExecuter(fullClassName, true);
         } catch (Exception e) {
             System.err.println(errorMessage + "\n" + e);
             e.printStackTrace();
@@ -27,13 +22,19 @@ public class jpm {
         return Thread.ofVirtual().start(r);
     }
 
+    public static Thread go(Runnable r){
+        return Thread.ofVirtual().start(r);
+    }
+
     public static void println(Object... o) {
         for (Object obj : o) {
             System.out.print(obj + " ");
         }
         System.out.println();
     }
-
+    public static boolean isAPrimitive(Object o) {
+        return  o instanceof Number || o instanceof Boolean || o instanceof Character;
+    }
     private static boolean isPrimitive(Object o) {
         return o instanceof String || o instanceof Number || o instanceof Boolean || o instanceof Character;
     }
