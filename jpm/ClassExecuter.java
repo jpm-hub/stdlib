@@ -1,6 +1,6 @@
 package jpm;
-import java.lang.reflect.InvocationTargetException;
 
+import java.lang.reflect.InvocationTargetException;
 
 public class ClassExecuter {
 	private final String className;
@@ -21,7 +21,7 @@ public class ClassExecuter {
 	}
 
 	public ClassExecuter construct(Object... typesAndArgs) {
-		if(clazz == null) {
+		if (clazz == null) {
 			return this;
 		}
 		if (typesAndArgs.length % 2 != 0) {
@@ -43,12 +43,16 @@ public class ClassExecuter {
 		}
 	}
 
-	public ClassExecuter construct(Object instance) { if(clazz == null) {
+	public ClassExecuter overrideInstance(Object instance) {
+		if (clazz == null) {
 			return this;
-		}this.instance = instance; return this;}
+		}
+		this.instance = instance;
+		return this;
+	}
 
 	public Object call(String methodName, Object... typesAndArgs) {
-		if(clazz == null) {
+		if (clazz == null) {
 			return null;
 		}
 		if (typesAndArgs.length % 2 != 0) {
@@ -75,7 +79,7 @@ public class ClassExecuter {
 	}
 
 	public ClassExecuter factory(String methodName, Object... typesAndArgs) {
-		if(clazz == null) {
+		if (clazz == null) {
 			return this;
 		}
 		if (typesAndArgs.length % 2 != 0) {
@@ -97,7 +101,7 @@ public class ClassExecuter {
 	}
 
 	public ClassExecuter build(String methodName, Object... typesAndArgs) {
-		if(clazz == null) {
+		if (clazz == null) {
 			return this;
 		}
 		call(methodName, typesAndArgs);
