@@ -1,8 +1,12 @@
 package jpm;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class jpm {
-    
+    static List<Thread> threads = new ArrayList<Thread>();
+
     public static ClassExecuter require(String fullClassName) {
         return new ClassExecuter(fullClassName, false);
     }
@@ -17,13 +21,19 @@ public class jpm {
             return null;
         }
     }
-
-    public static Thread run(Runnable r){
-        return Thread.ofVirtual().start(r);
-    }
-
-    public static Thread go(Runnable r){
-        return Thread.ofVirtual().start(r);
+    
+    public static void go(Runnable r) {
+        Thread t = Thread.ofVirtual().start(r);
+        threads.add(t);
+        if (threads.size() == 1) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    for (Thread thread : threads) thread.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
+        }
     }
 
     public static void println(Object... o) {
@@ -32,15 +42,18 @@ public class jpm {
         }
         System.out.println();
     }
+
     public static boolean isAPrimitive(Object o) {
-        return  o instanceof Number || o instanceof Boolean || o instanceof Character;
+        return o instanceof Number || o instanceof Boolean || o instanceof Character;
     }
+
     private static boolean isPrimitive(Object o) {
         return o instanceof String || o instanceof Number || o instanceof Boolean || o instanceof Character;
     }
 
     static int indent = 0;
     static Stack<String> classes = new Stack<String>();
+
     public static void printDebug(Object o) {
         if (indent > 100) {
             throw new RuntimeException("Object nesting too deep");
@@ -64,7 +77,7 @@ public class jpm {
                     if (item instanceof String) {
                         System.out.print("\"" + item + "\",");
                     } else {
-                        System.out.print(item+",");
+                        System.out.print(item + ",");
                     }
                 } else {
                     if (!i) {
@@ -98,7 +111,7 @@ public class jpm {
             boolean i = false;
             indent++;
             int j;
-            for ( j = 0; j < len; j++) {
+            for (j = 0; j < len; j++) {
                 Object item = java.lang.reflect.Array.get(o, j);
                 if (isPrimitive(item)) {
                     if (!i) {

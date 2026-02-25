@@ -1,8 +1,9 @@
-main: jpm.Main
+main: main.Main
 package: jpm
 version: 1.0.5
 language: java
 scripts:
+  run@: jpm compile jpm/ main/ && jpm run ...args@
   clean: rm -rf out dist jpm_dependencies
 args:
   javac: -parameters

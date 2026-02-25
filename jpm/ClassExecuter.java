@@ -37,9 +37,28 @@ public class ClassExecuter {
 			instance = clazz.getDeclaredConstructor(types).newInstance(args);
 			return this;
 		} catch (Exception e) {
-			System.err.println("Error constructing class " + className + ": " + e);
-			System.err.println("Is your constructor private? no need to call construct() if so.");
-			throw new RuntimeException(e);
+			System.err.println("Error constructing class " + className);
+			System.err.println();
+			System.err.println("Available constructors :");
+			boolean found = false;
+			for (var method : clazz.getDeclaredConstructors()) {
+				found = true;
+				System.err.print("  " + method.getName() + "(");
+					var params = method.getParameterTypes();
+					for (int i = 0; i < params.length; i++) {
+						System.err.print(params[i].getSimpleName());
+						if (i < params.length - 1) {
+							System.err.print(", ");
+						}
+					}
+					System.err.println(")");
+			}
+			if (!found) {
+				System.err.println("Is your constructor private? no need to call construct() if so.");
+			}
+			System.err.println();
+			System.err.println();
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -73,8 +92,30 @@ public class ClassExecuter {
 			}
 			return localInstance.getDeclaredMethod(methodName, types).invoke(instance, args);
 		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-			System.err.println("Error calling method " + methodName + " on class " + className + ": " + e);
-			throw new RuntimeException(e);
+			System.err.println("Error calling method " + methodName + " on class " + className);
+			System.err.println();
+			System.err.println("Available methods for " + methodName);
+			boolean found = false;
+			for (var method : localInstance.getDeclaredMethods()) {
+				found = true;
+				if (method.getName().equals(methodName)) {
+					System.err.print("  " + method.getName() + "(");
+					var params = method.getParameterTypes();
+					for (int i = 0; i < params.length; i++) {
+						System.err.print(params[i].getSimpleName());
+						if (i < params.length - 1) {
+							System.err.print(", ");
+						}
+					}
+					System.err.println(")");
+				}
+			}
+			if (!found) {
+				System.err.println("  No methods found with the name " + methodName);
+			}
+			System.err.println();
+			System.err.println();
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -95,8 +136,29 @@ public class ClassExecuter {
 			instance = clazz.getDeclaredMethod(methodName, types).invoke(instance, args);
 			return this;
 		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-			System.err.println("Error calling method " + methodName + " on class " + className + ": " + e);
-			throw new RuntimeException(e);
+			System.err.println("Error calling method " + methodName + " on class " + className);
+			System.err.println();
+			System.err.println("Available methods for '" + methodName+"'");
+			boolean found = false;
+			for (var method : clazz.getDeclaredMethods()) {
+				found = true;
+				if (method.getName().equals(methodName)) {
+					System.err.print("  " + method.getName() + "(");
+					var params = method.getParameterTypes();
+					for (int i = 0; i < params.length; i++) {
+						System.err.print(params[i].getSimpleName());
+						if (i < params.length - 1) {
+							System.err.print(", ");
+						}
+					}
+					System.err.println(")");
+				}
+			}
+			if (!found) {
+				System.err.println("  No methods found with the name " + methodName);
+			}
+			System.err.println("\n");
+			throw new IllegalArgumentException(e);
 		}
 	}
 
